@@ -4,7 +4,7 @@
 - [x] Setup DB (PostgreSQL with Neon) + Drizzle ORM
 - [x] Schema design for users, clients, invoices,payments
 - [x] Clerk auth setup
-- [] Main Layout (Sidebar + Header, Dark Mode)
+- [x] Main Layout (Sidebar + Header, Dark Mode)
 - [] Deploy to Vercel (empty dashboard with auth check)
 
 ### 2. Week -- CLIENT MANAGEMENT
