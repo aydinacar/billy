@@ -1,9 +1,9 @@
 ### 1. Week -- FOUNDATION
 
-- [] Create a new nextjs app
+- [x] Create a new nextjs app
 - [] Setup DB (PostgreSQL with Neon) + Drizzle ORM
 - [] Schema design for users, clients, invoices,payments
-- [] Clerk auth setup
+- [x] Clerk auth setup
 - [] Main Layout (Sidebar + Header, Dark Mode)
 - [] Deploy to Vercel (empty dashboard with auth check)
 
