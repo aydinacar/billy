@@ -1,4 +1,5 @@
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import Link from 'next/link'
 
 export default function HomeLayout({
   children
@@ -17,6 +18,12 @@ export default function HomeLayout({
           </SignUpButton>
         </Show>
         <Show when="signed-in">
+          <Link
+            className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+            href="/dashboard"
+          >
+            Dashboard
+          </Link>
           <UserButton />
         </Show>
       </header>
