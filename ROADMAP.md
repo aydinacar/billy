@@ -5,7 +5,7 @@
 - [x] Schema design for users, clients, invoices,payments
 - [x] Clerk auth setup
 - [x] Main Layout (Sidebar + Header, Dark Mode)
-- [] Deploy to Vercel (empty dashboard with auth check)
+- [x] Deploy to Vercel (empty dashboard with auth check)
 
 ### 2. Week -- CLIENT MANAGEMENT
 
