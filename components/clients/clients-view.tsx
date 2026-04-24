@@ -5,7 +5,8 @@ import { Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/common/page-header'
-import { ClientDialog } from './client-dialog'
+import { FormDialog } from '@/components/common/form-dialog'
+import { ClientForm } from './form/client-form'
 import { columns } from './columns'
 import { DataTable } from '@/components/table/data-table'
 import type { ClientDto } from '@/types/client'
@@ -17,6 +18,8 @@ interface ClientsViewProps {
 export function ClientsView({ clients }: ClientsViewProps) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<ClientDto | null>(null)
+
+  const isEditMode = !!selected
 
   function openCreate() {
     setSelected(null)
@@ -52,11 +55,21 @@ export function ClientsView({ clients }: ClientsViewProps) {
         filterPlaceholder="Filter emails..."
         onEdit={openEdit}
       />
-      <ClientDialog
-        client={selected}
+      <FormDialog
         open={open}
         onOpenChange={handleOpenChange}
-      />
+        title={isEditMode ? 'Edit Client' : 'Add New Client'}
+        description={
+          isEditMode
+            ? 'Update the client information below.'
+            : 'Add a new client to the system by filling out the form below.'
+        }
+      >
+        <ClientForm
+          initialData={selected}
+          onSuccess={() => handleOpenChange(false)}
+        />
+      </FormDialog>
     </div>
   )
 }
