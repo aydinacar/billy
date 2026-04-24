@@ -17,7 +17,7 @@
 
 ### 3. Week -- INVOICE CORE
 
-- [] Invoice List Page (CRUD)
+- [x] Invoice List Page (CRUD)
 - [] Invoice Form with Line Items (dynamic fields)
 - [] Invoice Detail Page (with client info and payments)
 - [] Invoice Status (Draft, Sent, Paid)
