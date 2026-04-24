@@ -9,11 +9,11 @@
 
 ### 2. Week -- CLIENT MANAGEMENT
 
-- [] Client List Page (CRUD)
-- [] Form Validation with Zod
-- [] Table with Sorting and Pagination (tanstack table)
-- [] Client Detail Page (with invoices list)
-- [] Deliverable: Client Management MVP
+- [x] Client List Page (CRUD)
+- [x] Form Validation with Zod
+- [x] Table with Sorting and Pagination (tanstack table)
+- [x] Client Detail Page (with invoices list)
+- [x] Deliverable: Client Management MVP
 
 ### 3. Week -- INVOICE CORE
 
