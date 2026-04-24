@@ -27,10 +27,10 @@
 
 ### 4. Week -- PDF EXPORT
 
-- [] React PDF or Puppeteer for PDF generation
-- [] Design a professional invoice template
-- [] Download PDF from Invoice Detail Page
-- [] Deliverable: PDF Export Feature
+- [x] React PDF or Puppeteer for PDF generation
+- [x] Design a professional invoice template
+- [x] Download PDF from Invoice Detail Page
+- [x] Deliverable: PDF Export Feature
 
 ### 5. Week -- PAYMENT INTEGRATION
 
