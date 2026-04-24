@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { Suspense, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -17,7 +17,11 @@ import { InvoiceItemsTable } from './invoice-items-table'
 import { InvoicePaymentsList } from './invoice-payments-list'
 import { InvoiceStatusActions } from './invoice-status-actions'
 import { InvoiceDownloadButton } from './invoice-download-button'
+import { InvoicePayButton } from './invoice-pay-button'
+import { InvoiceAmountSummary } from './invoice-amount-summary'
+import { InvoiceCheckoutToast } from './invoice-checkout-toast'
 import { deleteInvoice } from '@/actions/invoices'
+import { getAmountDue, getAmountPaid, getEffectiveStatus } from '@/utils/invoice-status'
 import type { InvoiceDetail } from '@/types/invoice'
 import type { Client } from '@/types/client'
 
@@ -31,6 +35,11 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
   const [open, setOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [isDeleting, startDelete] = useTransition()
+
+  const effectiveStatus = getEffectiveStatus(invoice)
+  const amountPaid = getAmountPaid(invoice.payments)
+  const amountDue = getAmountDue(invoice, invoice.payments)
+  const canPayWithStripe = amountDue > 0 && invoice.status !== 'cancelled'
 
   function handleEditSuccess() {
     setOpen(false)
@@ -52,18 +61,22 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
+      <Suspense fallback={null}>
+        <InvoiceCheckoutToast />
+      </Suspense>
       <BackLink href="/invoices">Back to invoices</BackLink>
 
       <PageHeader
         title={
           <span className="flex flex-wrap items-center gap-3">
             Invoice {invoice.invoiceNumber}
-            <InvoiceStatusBadge status={invoice.status} />
+            <InvoiceStatusBadge status={effectiveStatus} />
           </span>
         }
         description={invoice.client.name}
         action={
           <div className="flex flex-wrap gap-2">
+            {canPayWithStripe && <InvoicePayButton invoiceId={invoice.id} />}
             <InvoiceStatusActions
               invoiceId={invoice.id}
               status={invoice.status}
@@ -88,11 +101,19 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
         }
       />
 
+      <InvoiceAmountSummary
+        invoice={invoice}
+        amountPaid={amountPaid}
+        amountDue={amountDue}
+        effectiveStatus={effectiveStatus}
+      />
       <InvoiceInfoCard invoice={invoice} />
       <InvoiceItemsTable invoice={invoice} />
       <InvoicePaymentsList
+        invoiceId={invoice.id}
         payments={invoice.payments}
         currency={invoice.currency}
+        amountDue={amountDue}
       />
 
       <FormDialog

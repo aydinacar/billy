@@ -18,6 +18,7 @@ import { DataTableColumnHeader } from '@/components/table/header'
 import { InvoiceStatusBadge } from './status-badge'
 import { formatMoney } from '@/utils/money'
 import { formatDate } from '@/utils/date'
+import { getEffectiveStatus } from '@/utils/invoice-status'
 import type { InvoiceWithClient } from '@/types/invoice'
 
 export const columns: ColumnDef<InvoiceWithClient>[] = [
@@ -78,7 +79,7 @@ export const columns: ColumnDef<InvoiceWithClient>[] = [
         title="Status"
       />
     ),
-    cell: ({ row }) => <InvoiceStatusBadge status={row.original.status} />
+    cell: ({ row }) => <InvoiceStatusBadge status={getEffectiveStatus(row.original)} />
   },
   {
     accessorKey: 'dueDate',

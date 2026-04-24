@@ -64,7 +64,8 @@ export const paymentsTable = pgTable('payments', {
     .notNull(),
   amount: decimal('amount', { precision: 12, scale: 2 }).notNull(),
   paymentDate: timestamp('payment_date').defaultNow().notNull(),
-  paymentMethod: text('payment_method') // Örn: Bank Transfer, Stripe, Cash
+  paymentMethod: text('payment_method'), // Örn: Bank Transfer, Stripe, Cash
+  stripeSessionId: text('stripe_session_id').unique() // Stripe checkout session id (idempotency)
 })
 
 // --- İLİŞKİLER (Relations) ---

@@ -34,10 +34,10 @@
 
 ### 5. Week -- PAYMENT INTEGRATION
 
-- [] Integrate Stripe for payment processing
-- [] Partial Payments Support
-- [] Calculate Overdue Invoices
-- [] Deliverable: Payment Integration
+- [x] Integrate Stripe for payment processing
+- [x] Partial Payments Support
+- [x] Calculate Overdue Invoices
+- [x] Deliverable: Payment Integration
 
 ### 6. Week -- REVENUE DASHBOARD
 
