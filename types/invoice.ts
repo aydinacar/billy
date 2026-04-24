@@ -1,10 +1,12 @@
 import { z } from 'zod'
+
 import { invoicesTable, invoiceItemsTable } from '@/db/schema'
+import { currencyCodes, invoiceStatuses } from '@/constants/invoice'
 import type { Client } from './client'
 import type { Payment } from './payment'
 
-export const invoiceStatuses = ['draft', 'sent', 'paid', 'overdue', 'cancelled'] as const
 export type InvoiceStatus = (typeof invoiceStatuses)[number]
+export type Currency = (typeof currencyCodes)[number]
 
 const decimalString = (message: string) => z.string().regex(/^\d+(\.\d{1,2})?$/, message)
 
@@ -17,6 +19,7 @@ export const invoiceItemInputSchema = z.object({
 export const invoiceInputSchema = z.object({
   clientId: z.uuid('Select a client'),
   invoiceNumber: z.string().min(1, 'Invoice number is required').max(50),
+  currency: z.enum(currencyCodes),
   status: z.enum(invoiceStatuses),
   issuedDate: z.string().min(1, 'Select an issue date'),
   dueDate: z.string().min(1, 'Select a due date'),

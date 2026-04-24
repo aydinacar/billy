@@ -1,24 +1,22 @@
 'use client'
 
-import { type Control, type FieldErrors, type UseFormRegister, useFieldArray, useWatch } from 'react-hook-form'
+import { type Control, type FieldErrors, type UseFormRegister, useFieldArray } from 'react-hook-form'
 import { Plus, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ItemsTotal } from './items-total'
+import { emptyInvoiceItem } from '@/constants/invoice'
 import type { InvoiceInput } from '@/types/invoice'
-
-const emptyItem = { description: '', quantity: '1', unitPrice: '' }
 
 interface Props {
   control: Control<InvoiceInput>
   register: UseFormRegister<InvoiceInput>
   errors: FieldErrors<InvoiceInput>
-  currency?: string
 }
 
-export function InvoiceItemsField({ control, register, errors, currency = 'USD' }: Props) {
+export function InvoiceItemsField({ control, register, errors }: Props) {
   const { fields, append, remove } = useFieldArray({ control, name: 'items' })
 
   return (
@@ -31,7 +29,7 @@ export function InvoiceItemsField({ control, register, errors, currency = 'USD' 
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append({ ...emptyItem })}
+          onClick={() => append({ ...emptyInvoiceItem })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add item
@@ -94,10 +92,7 @@ export function InvoiceItemsField({ control, register, errors, currency = 'USD' 
       </div>
       {errors.items?.message && <p className="text-sm text-destructive">{errors.items.message}</p>}
 
-      <ItemsTotal
-        control={control}
-        currency={currency}
-      />
+      <ItemsTotal control={control} />
     </div>
   )
 }

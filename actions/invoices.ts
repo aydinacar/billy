@@ -7,9 +7,9 @@ import { z } from 'zod'
 
 import { db } from '@/db'
 import { invoicesTable, invoiceItemsTable } from '@/db/schema'
+import { invoiceStatuses } from '@/constants/invoice'
 import {
   invoiceInputSchema,
-  invoiceStatuses,
   invoiceUpdateSchema,
   type InvoiceInput,
   type InvoiceItemInput,

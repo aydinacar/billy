@@ -10,12 +10,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { FieldGroup } from '@/components/common/field-group'
 import { toDateInput } from '@/utils/date'
-import {
-  invoiceInputSchema,
-  invoiceStatuses,
-  type InvoiceInput,
-  type InvoiceWithClient
-} from '@/types/invoice'
+import { emptyInvoiceItem, invoiceStatuses, supportedCurrencies } from '@/constants/invoice'
+import { invoiceInputSchema, type InvoiceInput, type InvoiceWithClient } from '@/types/invoice'
 import type { Client } from '@/types/client'
 import { createInvoice, editInvoice } from '@/actions/invoices'
 import { InvoiceItemsField } from './invoice-items-field'
@@ -26,8 +22,6 @@ interface Props {
   onSuccess: () => void
   onCancel: () => void
 }
-
-const emptyItem = { description: '', quantity: '1', unitPrice: '' }
 
 export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props) {
   const isEditMode = !!initialData
@@ -42,6 +36,7 @@ export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props
     defaultValues: {
       clientId: initialData?.clientId || '',
       invoiceNumber: initialData?.invoiceNumber || '',
+      currency: initialData?.currency || 'USD',
       status: initialData?.status || 'draft',
       issuedDate: toDateInput(initialData?.issuedDate) || toDateInput(new Date()),
       dueDate: toDateInput(initialData?.dueDate),
@@ -51,7 +46,7 @@ export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props
           description: item.description,
           quantity: item.quantity,
           unitPrice: item.unitPrice
-        })) || [emptyItem]
+        })) || [{ ...emptyInvoiceItem }]
     }
   })
 
@@ -118,39 +113,68 @@ export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props
           <Input {...register('invoiceNumber')} />
         </FieldGroup>
 
-        <div className="sm:col-span-2">
-          <FieldGroup
-            label="Status"
-            error={errors.status?.message}
-            required
-          >
-            <Controller
-              control={control}
-              name="status"
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {invoiceStatuses.map(s => (
-                      <SelectItem
-                        key={s}
-                        value={s}
-                        className="capitalize"
-                      >
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </FieldGroup>
-        </div>
+        <FieldGroup
+          label="Status"
+          error={errors.status?.message}
+          required
+        >
+          <Controller
+            control={control}
+            name="status"
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {invoiceStatuses.map(s => (
+                    <SelectItem
+                      key={s}
+                      value={s}
+                      className="capitalize"
+                    >
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </FieldGroup>
+
+        <FieldGroup
+          label="Currency"
+          error={errors.currency?.message}
+          required
+        >
+          <Controller
+            control={control}
+            name="currency"
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {supportedCurrencies.map(c => (
+                    <SelectItem
+                      key={c.code}
+                      value={c.code}
+                    >
+                      {c.code} — {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </FieldGroup>
 
         <FieldGroup
           label="Issue Date"
@@ -179,7 +203,6 @@ export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props
         control={control}
         register={register}
         errors={errors}
-        currency={initialData?.currency}
       />
 
       <FieldGroup
