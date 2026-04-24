@@ -6,8 +6,8 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/common/page-header'
 import { ClientDialog } from './client-dialog'
-import { columns } from './table/columns'
-import { DataTable } from './table/data-table'
+import { columns } from './columns'
+import { DataTable } from '@/components/table/data-table'
 import type { ClientDto } from '@/types/client'
 
 interface ClientsViewProps {
@@ -48,6 +48,8 @@ export function ClientsView({ clients }: ClientsViewProps) {
       <DataTable
         columns={columns}
         data={clients}
+        filterColumn="email"
+        filterPlaceholder="Filter emails..."
         onEdit={openEdit}
       />
       <ClientDialog

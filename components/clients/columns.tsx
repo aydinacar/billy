@@ -12,14 +12,8 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Checkbox } from '@/components/ui/checkbox'
-import { DataTableColumnHeader } from './header'
+import { DataTableColumnHeader } from '@/components/table/header'
 import type { ClientDto } from '@/types/client'
-
-declare module '@tanstack/react-table' {
-  interface TableMeta<TData> {
-    onEdit?: (row: TData) => void
-  }
-}
 
 export const columns: ColumnDef<ClientDto>[] = [
   {
@@ -73,7 +67,7 @@ export const columns: ColumnDef<ClientDto>[] = [
     id: 'actions',
     cell: ({ row, table }) => {
       const client = row.original
-      const onEdit = table.options.meta?.onEdit
+      const { onEdit, onDelete } = table.options.meta ?? {}
 
       return (
         <DropdownMenu>
@@ -91,7 +85,12 @@ export const columns: ColumnDef<ClientDto>[] = [
             <DropdownMenuItem onClick={() => onEdit?.(client)}>Edit</DropdownMenuItem>
             <DropdownMenuItem>Details</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => onDelete?.(client)}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

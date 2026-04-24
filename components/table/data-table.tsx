@@ -1,36 +1,54 @@
 'use client'
 
+import * as React from 'react'
 import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   getFilteredRowModel,
-  useReactTable,
-  VisibilityState,
-  getPaginationRowModel
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { DataTablePagination } from './pagination'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import * as React from 'react'
+import { DataTablePagination } from './pagination'
+
+declare module '@tanstack/react-table' {
+  interface TableMeta<TData> {
+    onEdit?: (row: TData) => void
+    onDelete?: (row: TData) => void
+  }
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  filterColumn?: string
+  filterPlaceholder?: string
   onEdit?: (row: TData) => void
+  onDelete?: (row: TData) => void
 }
 
-export function DataTable<TData, TValue>({ columns, data, onEdit }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  filterColumn,
+  filterPlaceholder,
+  onEdit,
+  onDelete
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -54,19 +72,24 @@ export function DataTable<TData, TValue>({ columns, data, onEdit }: DataTablePro
       rowSelection
     },
     meta: {
-      onEdit
+      onEdit,
+      onDelete
     }
   })
+
+  const filterCol = filterColumn ? table.getColumn(filterColumn) : undefined
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-          onChange={event => table.getColumn('email')?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
+        {filterCol && (
+          <Input
+            placeholder={filterPlaceholder ?? `Filter ${filterColumn}...`}
+            value={(filterCol.getFilterValue() as string) ?? ''}
+            onChange={event => filterCol.setFilterValue(event.target.value)}
+            className="max-w-sm"
+          />
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -80,18 +103,16 @@ export function DataTable<TData, TValue>({ columns, data, onEdit }: DataTablePro
             {table
               .getAllColumns()
               .filter(column => column.getCanHide())
-              .map(column => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={value => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
+              .map(column => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={value => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -101,13 +122,11 @@ export function DataTable<TData, TValue>({ columns, data, onEdit }: DataTablePro
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
