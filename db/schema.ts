@@ -16,8 +16,8 @@ export const usersTable = pgTable('users', {
 // 2. CLIENTS Tablosu
 export const clientsTable = pgTable('clients', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => usersTable.id, { onDelete: 'cascade' })
+  userId: text('user_id')
+    .references(() => usersTable.clerkId, { onDelete: 'cascade' })
     .notNull(),
   name: text('name').notNull(),
   email: text('email').notNull(),
@@ -29,8 +29,8 @@ export const clientsTable = pgTable('clients', {
 // 3. INVOICES Tablosu
 export const invoicesTable = pgTable('invoices', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => usersTable.id, { onDelete: 'cascade' })
+  userId: text('user_id')
+    .references(() => usersTable.clerkId, { onDelete: 'cascade' })
     .notNull(),
   clientId: uuid('client_id')
     .references(() => clientsTable.id, { onDelete: 'cascade' })

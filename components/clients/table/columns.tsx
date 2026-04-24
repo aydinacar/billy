@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal, ArrowUpDown } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -13,14 +13,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from './header'
-export type Client = {
-  id: string
-  amount: number
-  status: 'pending' | 'processing' | 'success' | 'failed'
-  email: string
+import type { ClientDto } from '@/types/client'
+
+declare module '@tanstack/react-table' {
+  interface TableMeta<TData> {
+    onEdit?: (row: TData) => void
+  }
 }
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<ClientDto>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -42,11 +43,11 @@ export const columns: ColumnDef<Client>[] = [
   },
 
   {
-    accessorKey: 'status',
+    accessorKey: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Status"
+        title="Name"
       />
     )
   },
@@ -60,18 +61,19 @@ export const columns: ColumnDef<Client>[] = [
     )
   },
   {
-    accessorKey: 'amount',
+    accessorKey: 'taxNumber',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Amount"
+        title="Tax Number"
       />
     )
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      const payment = row.original
+    cell: ({ row, table }) => {
+      const client = row.original
+      const onEdit = table.options.meta?.onEdit
 
       return (
         <DropdownMenu>
@@ -86,12 +88,10 @@ export const columns: ColumnDef<Client>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
-              Copy payment ID
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onEdit?.(client)}>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Details</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
