@@ -108,9 +108,13 @@ export function InvoiceForm({ initialData, clients, onSuccess, onCancel }: Props
         <FieldGroup
           label="Invoice Number"
           error={errors.invoiceNumber?.message}
-          required
         >
-          <Input {...register('invoiceNumber')} />
+          <Input
+            {...register('invoiceNumber')}
+            placeholder={isEditMode ? undefined : 'Leave empty to auto-generate'}
+            readOnly={isEditMode}
+            className={isEditMode ? 'bg-muted cursor-not-allowed' : undefined}
+          />
         </FieldGroup>
 
         <FieldGroup

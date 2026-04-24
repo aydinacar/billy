@@ -1,6 +1,6 @@
 'use server'
 
-import { and, asc, desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, like } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
@@ -28,16 +28,40 @@ function computeAmount(items: InvoiceItemInput[]): string {
   return total.toFixed(2)
 }
 
+async function generateInvoiceNumber(userId: string): Promise<string> {
+  const year = new Date().getFullYear()
+  const prefix = `INV-${year}-`
+
+  const rows = await db
+    .select({ invoiceNumber: invoicesTable.invoiceNumber })
+    .from(invoicesTable)
+    .where(and(eq(invoicesTable.userId, userId), like(invoicesTable.invoiceNumber, `${prefix}%`)))
+
+  const sequencePattern = new RegExp(`^INV-${year}-(\\d+)$`)
+  let maxSeq = 0
+  for (const row of rows) {
+    const match = row.invoiceNumber.match(sequencePattern)
+    if (match) {
+      const seq = parseInt(match[1], 10)
+      if (seq > maxSeq) maxSeq = seq
+    }
+  }
+
+  return `${prefix}${(maxSeq + 1).toString().padStart(4, '0')}`
+}
+
 export async function createInvoice(dto: InvoiceInput) {
   const userId = await requireUserId()
-  const { items, ...rest } = invoiceInputSchema.parse(dto)
+  const { items, invoiceNumber, ...rest } = invoiceInputSchema.parse(dto)
   const amount = computeAmount(items)
+  const finalNumber = invoiceNumber?.trim() || (await generateInvoiceNumber(userId))
 
   const [created] = await db
     .insert(invoicesTable)
     .values({
       ...rest,
       userId,
+      invoiceNumber: finalNumber,
       amount,
       issuedDate: new Date(rest.issuedDate),
       dueDate: new Date(rest.dueDate),
@@ -86,7 +110,7 @@ export async function getInvoiceById(id: string) {
 
 export async function editInvoice(dto: InvoiceUpdate) {
   const userId = await requireUserId()
-  const { id, items, ...rest } = invoiceUpdateSchema.parse(dto)
+  const { id, items, invoiceNumber, ...rest } = invoiceUpdateSchema.parse(dto)
   const amount = computeAmount(items)
 
   await db
@@ -94,6 +118,7 @@ export async function editInvoice(dto: InvoiceUpdate) {
     .set({
       ...rest,
       amount,
+      ...(invoiceNumber?.trim() ? { invoiceNumber: invoiceNumber.trim() } : {}),
       issuedDate: new Date(rest.issuedDate),
       dueDate: new Date(rest.dueDate),
       notes: rest.notes || null

@@ -18,7 +18,7 @@ export const invoiceItemInputSchema = z.object({
 
 export const invoiceInputSchema = z.object({
   clientId: z.uuid('Select a client'),
-  invoiceNumber: z.string().min(1, 'Invoice number is required').max(50),
+  invoiceNumber: z.string().max(50).optional(),
   currency: z.enum(currencyCodes),
   status: z.enum(invoiceStatuses),
   issuedDate: z.string().min(1, 'Select an issue date'),

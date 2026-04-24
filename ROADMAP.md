@@ -21,9 +21,9 @@
 - [x] Invoice Form with Line Items (dynamic fields)
 - [x] Invoice Detail Page (with client info and payments)
 - [x] Invoice Status (Draft, Sent, Paid)
-- [] Multiple Currencies Support
-- [] Invoice Number Generation
-- [] Deliverable: Invoice Management MVP
+- [x] Multiple Currencies Support
+- [x] Invoice Number Generation
+- [x] Deliverable: Invoice Management MVP
 
 ### 4. Week -- PDF EXPORT
 
