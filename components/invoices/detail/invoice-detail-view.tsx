@@ -15,6 +15,7 @@ import { InvoiceStatusBadge } from '../status-badge'
 import { InvoiceInfoCard } from './invoice-info-card'
 import { InvoiceItemsTable } from './invoice-items-table'
 import { InvoicePaymentsList } from './invoice-payments-list'
+import { InvoiceStatusActions } from './invoice-status-actions'
 import { deleteInvoice } from '@/actions/invoices'
 import type { InvoiceDetail } from '@/types/invoice'
 import type { Client } from '@/types/client'
@@ -61,7 +62,11 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
         }
         description={invoice.client.name}
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <InvoiceStatusActions
+              invoiceId={invoice.id}
+              status={invoice.status}
+            />
             <Button
               variant="outline"
               onClick={() => setOpen(true)}

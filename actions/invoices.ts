@@ -3,14 +3,17 @@
 import { and, asc, desc, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
+import { z } from 'zod'
 
 import { db } from '@/db'
 import { invoicesTable, invoiceItemsTable } from '@/db/schema'
 import {
   invoiceInputSchema,
+  invoiceStatuses,
   invoiceUpdateSchema,
   type InvoiceInput,
   type InvoiceItemInput,
+  type InvoiceStatus,
   type InvoiceUpdate
 } from '@/types/invoice'
 
@@ -115,4 +118,20 @@ export async function deleteInvoice(id: string) {
   const userId = await requireUserId()
   await db.delete(invoicesTable).where(and(eq(invoicesTable.id, id), eq(invoicesTable.userId, userId)))
   revalidatePath('/invoices')
+}
+
+const statusChangeSchema = z.object({
+  id: z.uuid(),
+  status: z.enum(invoiceStatuses)
+})
+
+export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
+  const userId = await requireUserId()
+  const data = statusChangeSchema.parse({ id, status })
+  await db
+    .update(invoicesTable)
+    .set({ status: data.status })
+    .where(and(eq(invoicesTable.id, data.id), eq(invoicesTable.userId, userId)))
+  revalidatePath('/invoices')
+  revalidatePath(`/invoices/${data.id}`)
 }
