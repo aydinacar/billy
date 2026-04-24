@@ -16,6 +16,7 @@ import { InvoiceInfoCard } from './invoice-info-card'
 import { InvoiceItemsTable } from './invoice-items-table'
 import { InvoicePaymentsList } from './invoice-payments-list'
 import { InvoiceStatusActions } from './invoice-status-actions'
+import { InvoiceDownloadButton } from './invoice-download-button'
 import { deleteInvoice } from '@/actions/invoices'
 import type { InvoiceDetail } from '@/types/invoice'
 import type { Client } from '@/types/client'
@@ -67,6 +68,7 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
               invoiceId={invoice.id}
               status={invoice.status}
             />
+            <InvoiceDownloadButton invoiceId={invoice.id} />
             <Button
               variant="outline"
               onClick={() => setOpen(true)}
