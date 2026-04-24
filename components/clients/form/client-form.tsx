@@ -3,18 +3,20 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { FieldGroup } from '@/components/common/field-group'
 import { Textarea } from '@/components/ui/textarea'
 import type { ClientDto } from '@/types/client'
 import { createClient, editClient } from '@/actions/clients'
+
 const schema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters').max(50),
   email: z.email('Invalid email'),
-  taxNumber: z.string().max(50).optional().or(z.literal('')),
-  address: z.string().max(200).optional().or(z.literal(''))
+  taxNumber: z.string().max(50).optional(),
+  address: z.string().max(200).optional()
 })
 
 type FormInput = z.infer<typeof schema>
@@ -27,23 +29,10 @@ interface ClientFormProps {
 export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
   const isEditMode = !!initialData
 
-  async function onSubmit(data: FormInput) {
-    try {
-      if (isEditMode) {
-        await editClient({ id: initialData.id, ...data })
-      } else {
-        await createClient(data)
-      }
-      onSuccess()
-    } catch (error) {
-      console.error('Error saving client:', error)
-    }
-  }
-
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<FormInput>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -53,6 +42,25 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
       address: initialData?.address || ''
     }
   })
+
+  async function onSubmit(data: FormInput) {
+    const payload = {
+      ...data,
+      taxNumber: data.taxNumber || undefined,
+      address: data.address || undefined
+    }
+    try {
+      if (isEditMode) {
+        await editClient({ id: initialData.id, ...payload })
+      } else {
+        await createClient(payload)
+      }
+      onSuccess()
+    } catch (error) {
+      console.error('Error saving client:', error)
+      toast.error(isEditMode ? 'Failed to update client' : 'Failed to create client')
+    }
+  }
 
   return (
     <form
@@ -85,7 +93,6 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
         <FieldGroup
           label="Tax Number"
           error={errors.taxNumber?.message}
-          required
         >
           <Input {...register('taxNumber')} />
         </FieldGroup>
@@ -99,28 +106,13 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
-        <Button type="submit">{isEditMode ? 'Update' : 'Create'}</Button>
+        <Button
+          disabled={isSubmitting}
+          type="submit"
+        >
+          {isEditMode ? 'Update' : 'Create'}
+        </Button>
       </div>
     </form>
-  )
-}
-
-interface FieldGroupProps {
-  label: string
-  error?: string
-  required?: boolean
-  children: React.ReactNode
-}
-
-function FieldGroup({ label, error, required, children }: FieldGroupProps) {
-  return (
-    <div className="space-y-2">
-      <Label>
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </Label>
-      {children}
-      {error && <p className="text-sm text-destructive">{error}</p>}
-    </div>
   )
 }
