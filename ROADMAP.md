@@ -18,9 +18,9 @@
 ### 3. Week -- INVOICE CORE
 
 - [x] Invoice List Page (CRUD)
-- [] Invoice Form with Line Items (dynamic fields)
-- [] Invoice Detail Page (with client info and payments)
-- [] Invoice Status (Draft, Sent, Paid)
+- [x] Invoice Form with Line Items (dynamic fields)
+- [x] Invoice Detail Page (with client info and payments)
+- [x] Invoice Status (Draft, Sent, Paid)
 - [] Multiple Currencies Support
 - [] Invoice Number Generation
 - [] Deliverable: Invoice Management MVP

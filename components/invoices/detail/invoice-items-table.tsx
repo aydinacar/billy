@@ -1,10 +1,8 @@
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { formatMoney } from '@/utils/money'
 import type { InvoiceDetail } from '@/types/invoice'
 
 export function InvoiceItemsTable({ invoice }: { invoice: InvoiceDetail }) {
-  const formatMoney = (value: string | number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency }).format(Number(value))
-
   return (
     <div className="rounded-lg border overflow-hidden">
       <Table>
@@ -23,8 +21,8 @@ export function InvoiceItemsTable({ invoice }: { invoice: InvoiceDetail }) {
               <TableRow key={item.id}>
                 <TableCell>{item.description}</TableCell>
                 <TableCell className="text-right">{item.quantity}</TableCell>
-                <TableCell className="text-right">{formatMoney(item.unitPrice)}</TableCell>
-                <TableCell className="text-right">{formatMoney(lineTotal)}</TableCell>
+                <TableCell className="text-right">{formatMoney(item.unitPrice, invoice.currency)}</TableCell>
+                <TableCell className="text-right">{formatMoney(lineTotal, invoice.currency)}</TableCell>
               </TableRow>
             )
           })}
@@ -37,7 +35,7 @@ export function InvoiceItemsTable({ invoice }: { invoice: InvoiceDetail }) {
             >
               Total
             </TableCell>
-            <TableCell className="text-right font-medium">{formatMoney(invoice.amount)}</TableCell>
+            <TableCell className="text-right font-medium">{formatMoney(invoice.amount, invoice.currency)}</TableCell>
           </TableRow>
         </TableFooter>
       </Table>

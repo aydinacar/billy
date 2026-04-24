@@ -2,13 +2,8 @@ import Link from 'next/link'
 
 import { DetailCard } from '@/components/common/detail-card'
 import { InfoRow } from '@/components/common/info-row'
+import { formatDate } from '@/utils/date'
 import type { InvoiceDetail } from '@/types/invoice'
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric'
-})
 
 export function InvoiceInfoCard({ invoice }: { invoice: InvoiceDetail }) {
   return (
@@ -30,11 +25,11 @@ export function InvoiceInfoCard({ invoice }: { invoice: InvoiceDetail }) {
       />
       <InfoRow
         label="Issued"
-        value={dateFormatter.format(invoice.issuedDate)}
+        value={formatDate(invoice.issuedDate)}
       />
       <InfoRow
         label="Due"
-        value={dateFormatter.format(invoice.dueDate)}
+        value={formatDate(invoice.dueDate)}
       />
       {invoice.notes && (
         <InfoRow

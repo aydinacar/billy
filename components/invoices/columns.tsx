@@ -16,20 +16,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { DataTableColumnHeader } from '@/components/table/header'
 import { InvoiceStatusBadge } from './status-badge'
+import { formatMoney } from '@/utils/money'
+import { formatDate } from '@/utils/date'
 import type { InvoiceWithClient } from '@/types/invoice'
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric'
-})
-
-function formatAmount(amount: string, currency: string) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency
-  }).format(Number(amount))
-}
 
 export const columns: ColumnDef<InvoiceWithClient>[] = [
   {
@@ -78,7 +67,7 @@ export const columns: ColumnDef<InvoiceWithClient>[] = [
         title="Amount"
       />
     ),
-    cell: ({ row }) => formatAmount(row.original.amount, row.original.currency),
+    cell: ({ row }) => formatMoney(row.original.amount, row.original.currency),
     sortingFn: (a, b) => Number(a.original.amount) - Number(b.original.amount)
   },
   {
@@ -99,7 +88,7 @@ export const columns: ColumnDef<InvoiceWithClient>[] = [
         title="Due"
       />
     ),
-    cell: ({ row }) => dateFormatter.format(row.original.dueDate)
+    cell: ({ row }) => formatDate(row.original.dueDate)
   },
   {
     id: 'actions',

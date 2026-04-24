@@ -1,5 +1,6 @@
 import { DetailCard } from '@/components/common/detail-card'
 import { InfoRow } from '@/components/common/info-row'
+import { formatDate } from '@/utils/date'
 import type { Client } from '@/types/client'
 
 interface Props {
@@ -7,12 +8,6 @@ interface Props {
 }
 
 export function ClientInfoCard({ client }: Props) {
-  const createdAt = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(client.createdAt)
-
   return (
     <DetailCard>
       <InfoRow
@@ -33,7 +28,7 @@ export function ClientInfoCard({ client }: Props) {
       />
       <InfoRow
         label="Created"
-        value={createdAt}
+        value={formatDate(client.createdAt)}
       />
     </DetailCard>
   )

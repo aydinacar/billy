@@ -1,3 +1,5 @@
+import { formatMoney } from '@/utils/money'
+import { formatDate } from '@/utils/date'
 import type { Payment } from '@/types/payment'
 
 interface Props {
@@ -5,16 +7,7 @@ interface Props {
   currency: string
 }
 
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric'
-})
-
 export function InvoicePaymentsList({ payments, currency }: Props) {
-  const formatMoney = (value: string) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(value))
-
   return (
     <div className="rounded-lg border p-6 space-y-3">
       <h2 className="font-medium">Payments</h2>
@@ -27,9 +20,9 @@ export function InvoicePaymentsList({ payments, currency }: Props) {
               key={p.id}
               className="py-2 flex items-center justify-between gap-4 text-sm"
             >
-              <span>{dateFormatter.format(p.paymentDate)}</span>
+              <span>{formatDate(p.paymentDate)}</span>
               <span className="text-muted-foreground">{p.paymentMethod || '—'}</span>
-              <span className="font-medium">{formatMoney(p.amount)}</span>
+              <span className="font-medium">{formatMoney(p.amount, currency)}</span>
             </li>
           ))}
         </ul>
