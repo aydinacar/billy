@@ -9,15 +9,15 @@ import { FormDialog } from '@/components/common/form-dialog'
 import { ClientForm } from './form/client-form'
 import { columns } from './columns'
 import { DataTable } from '@/components/table/data-table'
-import type { ClientDto } from '@/types/client'
+import type { Client } from '@/types/client'
 
 interface ClientsViewProps {
-  clients: ClientDto[]
+  clients: Client[]
 }
 
 export function ClientsView({ clients }: ClientsViewProps) {
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<ClientDto | null>(null)
+  const [selected, setSelected] = useState<Client | null>(null)
 
   const isEditMode = !!selected
 
@@ -26,7 +26,7 @@ export function ClientsView({ clients }: ClientsViewProps) {
     setOpen(true)
   }
 
-  function openEdit(client: ClientDto) {
+  function openEdit(client: Client) {
     setSelected(client)
     setOpen(true)
   }

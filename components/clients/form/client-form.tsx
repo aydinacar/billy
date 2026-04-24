@@ -2,27 +2,17 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FieldGroup } from '@/components/common/field-group'
 import { Textarea } from '@/components/ui/textarea'
-import type { ClientDto } from '@/types/client'
+import { clientInputSchema, type Client, type ClientInput } from '@/types/client'
 import { createClient, editClient } from '@/actions/clients'
 
-const schema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters').max(50),
-  email: z.email('Invalid email'),
-  taxNumber: z.string().max(50).optional(),
-  address: z.string().max(200).optional()
-})
-
-type FormInput = z.infer<typeof schema>
-
 interface ClientFormProps {
-  initialData?: ClientDto | null
+  initialData?: Client | null
   onSuccess: () => void
 }
 
@@ -33,8 +23,8 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<FormInput>({
-    resolver: zodResolver(schema),
+  } = useForm<ClientInput>({
+    resolver: zodResolver(clientInputSchema),
     defaultValues: {
       name: initialData?.name || '',
       email: initialData?.email || '',
@@ -43,7 +33,7 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
     }
   })
 
-  async function onSubmit(data: FormInput) {
+  async function onSubmit(data: ClientInput) {
     const payload = {
       ...data,
       taxNumber: data.taxNumber || undefined,

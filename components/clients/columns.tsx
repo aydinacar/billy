@@ -13,9 +13,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/table/header'
-import type { ClientDto } from '@/types/client'
+import type { Client } from '@/types/client'
 
-export const columns: ColumnDef<ClientDto>[] = [
+export const columns: ColumnDef<Client>[] = [
   {
     id: 'select',
     header: ({ table }) => (

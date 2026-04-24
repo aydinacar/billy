@@ -1,53 +1,54 @@
 'use server'
 
-import { db } from '@/db'
-import { ClientDto, CreateClientDto, UpdateClientDto } from '@/types/client'
-import { clientsTable } from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
-export async function createClient(dto: CreateClientDto) {
+
+import { db } from '@/db'
+import { clientsTable } from '@/db/schema'
+import { clientInputSchema, clientUpdateSchema, type ClientInput, type ClientUpdate } from '@/types/client'
+
+async function requireUserId() {
   const { userId } = await auth()
-  await db
-    .insert(clientsTable)
-    .values({
-      ...dto,
-      userId: userId!
-    })
-    .returning()
+  if (!userId) throw new Error('Unauthorized')
+  return userId
+}
+
+export async function createClient(dto: ClientInput) {
+  const userId = await requireUserId()
+  const data = clientInputSchema.parse(dto)
+  await db.insert(clientsTable).values({ ...data, userId })
   revalidatePath('/clients')
 }
 
 export async function getClients() {
   const { userId } = await auth()
   if (!userId) return []
-  const clients = await db.query.clientsTable.findMany({
+  return db.query.clientsTable.findMany({
     where: eq(clientsTable.userId, userId)
   })
-  return clients
 }
 
 export async function getClientById(id: string) {
   const { userId } = await auth()
   if (!userId) return null
-  const client = await db.query.clientsTable.findFirst({
+  return db.query.clientsTable.findFirst({
     where: and(eq(clientsTable.id, id), eq(clientsTable.userId, userId))
   })
-  return client
 }
 
-export async function editClient(dto: UpdateClientDto) {
-  const { userId } = await auth()
+export async function editClient(dto: ClientUpdate) {
+  const userId = await requireUserId()
+  const { id, ...data } = clientUpdateSchema.parse(dto)
   await db
     .update(clientsTable)
-    .set(dto)
-    .where(and(eq(clientsTable.id, dto.id), eq(clientsTable.userId, userId!)))
-    .returning()
+    .set(data)
+    .where(and(eq(clientsTable.id, id), eq(clientsTable.userId, userId)))
   revalidatePath('/clients')
 }
 
 export async function deleteClient(id: string) {
-  const { userId } = await auth()
-  await db.delete(clientsTable).where(and(eq(clientsTable.id, id), eq(clientsTable.userId, userId!)))
+  const userId = await requireUserId()
+  await db.delete(clientsTable).where(and(eq(clientsTable.id, id), eq(clientsTable.userId, userId)))
   revalidatePath('/clients')
 }

@@ -63,13 +63,13 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }))
 
 export const clientsRelations = relations(clientsTable, ({ one, many }) => ({
-  user: one(usersTable, { fields: [clientsTable.userId], references: [usersTable.id] }),
+  user: one(usersTable, { fields: [clientsTable.userId], references: [usersTable.clerkId] }),
   invoices: many(invoicesTable)
 }))
 
 export const invoicesRelations = relations(invoicesTable, ({ one, many }) => ({
   client: one(clientsTable, { fields: [invoicesTable.clientId], references: [clientsTable.id] }),
-  user: one(usersTable, { fields: [invoicesTable.userId], references: [usersTable.id] }),
+  user: one(usersTable, { fields: [invoicesTable.userId], references: [usersTable.clerkId] }),
   payments: many(paymentsTable)
 }))
 
