@@ -94,6 +94,7 @@ export function InvoicesView({ invoices, clients }: Props) {
           initialData={selected}
           clients={clients}
           onSuccess={() => handleOpenChange(false)}
+          onCancel={() => handleOpenChange(false)}
         />
       </FormDialog>
       <ConfirmDialog

@@ -14,9 +14,10 @@ import { createClient, editClient } from '@/actions/clients'
 interface ClientFormProps {
   initialData?: Client | null
   onSuccess: () => void
+  onCancel: () => void
 }
 
-export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
+export function ClientForm({ initialData, onSuccess, onCancel }: ClientFormProps) {
   const isEditMode = !!initialData
 
   const {
@@ -96,6 +97,14 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
         <Button
           disabled={isSubmitting}
           type="submit"

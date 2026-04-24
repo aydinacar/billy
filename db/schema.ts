@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, decimal, pgEnum } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, text, timestamp, decimal, integer, pgEnum } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 // Fatura durumları için Enum
@@ -44,7 +44,19 @@ export const invoicesTable = pgTable('invoices', {
   notes: text('notes')
 })
 
-// 4. PAYMENTS Tablosu
+// 4. INVOICE ITEMS Tablosu (Line Items)
+export const invoiceItemsTable = pgTable('invoice_items', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  invoiceId: uuid('invoice_id')
+    .references(() => invoicesTable.id, { onDelete: 'cascade' })
+    .notNull(),
+  description: text('description').notNull(),
+  quantity: decimal('quantity', { precision: 12, scale: 2 }).notNull(),
+  unitPrice: decimal('unit_price', { precision: 12, scale: 2 }).notNull(),
+  position: integer('position').notNull().default(0)
+})
+
+// 5. PAYMENTS Tablosu
 export const paymentsTable = pgTable('payments', {
   id: uuid('id').primaryKey().defaultRandom(),
   invoiceId: uuid('invoice_id')
@@ -70,7 +82,12 @@ export const clientsRelations = relations(clientsTable, ({ one, many }) => ({
 export const invoicesRelations = relations(invoicesTable, ({ one, many }) => ({
   client: one(clientsTable, { fields: [invoicesTable.clientId], references: [clientsTable.id] }),
   user: one(usersTable, { fields: [invoicesTable.userId], references: [usersTable.clerkId] }),
-  payments: many(paymentsTable)
+  payments: many(paymentsTable),
+  items: many(invoiceItemsTable)
+}))
+
+export const invoiceItemsRelations = relations(invoiceItemsTable, ({ one }) => ({
+  invoice: one(invoicesTable, { fields: [invoiceItemsTable.invoiceId], references: [invoicesTable.id] })
 }))
 
 export const paymentsRelations = relations(paymentsTable, ({ one }) => ({

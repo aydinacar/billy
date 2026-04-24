@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
 interface Props {
-  title: string
-  description?: string
+  title: ReactNode
+  description?: ReactNode
   action?: ReactNode
 }
 

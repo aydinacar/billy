@@ -68,6 +68,7 @@ export function ClientsView({ clients }: ClientsViewProps) {
         <ClientForm
           initialData={selected}
           onSuccess={() => handleOpenChange(false)}
+          onCancel={() => handleOpenChange(false)}
         />
       </FormDialog>
     </div>
