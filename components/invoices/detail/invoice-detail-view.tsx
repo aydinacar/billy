@@ -2,10 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/common/page-header'
 import { FormDialog } from '@/components/common/form-dialog'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
@@ -16,8 +14,8 @@ import { InvoiceInfoCard } from './invoice-info-card'
 import { InvoiceItemsTable } from './invoice-items-table'
 import { InvoicePaymentsList } from './invoice-payments-list'
 import { InvoiceStatusActions } from './invoice-status-actions'
-import { InvoiceDownloadButton } from './invoice-download-button'
-import { InvoiceShareActions } from './invoice-share-actions'
+import { InvoiceCopyLinkButton } from './invoice-share-actions'
+import { InvoiceMoreMenu } from './invoice-more-menu'
 import { InvoiceAmountSummary } from './invoice-amount-summary'
 import { deleteInvoice } from '@/actions/invoices'
 import { getAmountDue, getAmountPaid, getEffectiveStatus } from '@/utils/invoice-status'
@@ -71,28 +69,20 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
         }
         description={invoice.client.name}
         action={
-          <div className="flex flex-wrap gap-2">
-            {canPayWithStripe && <InvoiceShareActions publicToken={invoice.publicToken} />}
+          <div className="flex flex-wrap items-center gap-2">
+            {canPayWithStripe && <InvoiceCopyLinkButton publicToken={invoice.publicToken} />}
             <InvoiceStatusActions
               invoiceId={invoice.id}
               status={invoice.status}
             />
-            <InvoiceDownloadButton invoiceId={invoice.id} />
-            <Button
-              variant="outline"
-              onClick={() => setOpen(true)}
-            >
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => setConfirmOpen(true)}
-              disabled={isDeleting}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </Button>
+            <InvoiceMoreMenu
+              invoiceId={invoice.id}
+              publicToken={invoice.publicToken}
+              canShare={canPayWithStripe}
+              onEdit={() => setOpen(true)}
+              onDelete={() => setConfirmOpen(true)}
+              isDeleting={isDeleting}
+            />
           </div>
         }
       />

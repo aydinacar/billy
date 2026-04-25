@@ -1,7 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-import { Copy, ExternalLink } from 'lucide-react'
+import { Copy } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -10,11 +9,9 @@ interface Props {
   publicToken: string
 }
 
-export function InvoiceShareActions({ publicToken }: Props) {
-  const path = `/pay/${publicToken}`
-
+export function InvoiceCopyLinkButton({ publicToken }: Props) {
   async function handleCopy() {
-    const url = `${window.location.origin}${path}`
+    const url = `${window.location.origin}/pay/${publicToken}`
     try {
       await navigator.clipboard.writeText(url)
       toast.success('Pay link copied to clipboard')
@@ -24,27 +21,10 @@ export function InvoiceShareActions({ publicToken }: Props) {
   }
 
   return (
-    <>
-      <Button
-        variant="outline"
-        onClick={handleCopy}
-      >
-        <Copy className="mr-2 h-4 w-4" />
-        Copy pay link
-      </Button>
-      <Button
-        variant="outline"
-        asChild
-      >
-        <Link
-          href={path}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <ExternalLink className="mr-2 h-4 w-4" />
-          View as customer
-        </Link>
-      </Button>
-    </>
+    <Button onClick={handleCopy}>
+      <Copy className="mr-2 h-4 w-4" />
+      <span className="hidden sm:inline">Copy pay link</span>
+      <span className="sm:hidden">Copy link</span>
+    </Button>
   )
 }
