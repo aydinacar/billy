@@ -13,13 +13,15 @@ interface Props {
 
 export function Sidebar({ onNavigate, forceExpanded }: Props) {
   const { collapsed: collapsedFromContext } = useSidebar()
-  const collapsed = !forceExpanded && collapsedFromContext
+  const inSheet = !!forceExpanded
+  const collapsed = !inSheet && collapsedFromContext
 
   return (
     <aside
       className={cn(
-        'h-full bg-card border-r flex flex-col transition-[width] duration-200',
-        collapsed ? 'w-16' : 'w-64'
+        'h-full bg-card flex flex-col',
+        inSheet ? 'w-full' : 'border-r transition-[width] duration-200',
+        !inSheet && (collapsed ? 'w-16' : 'w-64')
       )}
     >
       <SidebarBrand collapsed={collapsed} />

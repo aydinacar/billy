@@ -25,7 +25,7 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="p-0 w-64"
+        className="p-0 w-72 sm:w-80"
       >
         <Sidebar
           onNavigate={() => setOpen(false)}
