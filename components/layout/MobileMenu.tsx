@@ -27,7 +27,10 @@ export function MobileMenu() {
         side="left"
         className="p-0 w-64"
       >
-        <Sidebar onNavigate={() => setOpen(false)} />
+        <Sidebar
+          onNavigate={() => setOpen(false)}
+          forceExpanded
+        />
       </SheetContent>
     </Sheet>
   )
