@@ -1,5 +1,5 @@
 import { pgTable, uuid, text, timestamp, decimal, integer, pgEnum } from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 
 // Fatura durumları için Enum
 export const invoiceStatusEnum = pgEnum('invoice_status', ['draft', 'sent', 'paid', 'overdue', 'cancelled'])
@@ -10,6 +10,12 @@ export const usersTable = pgTable('users', {
   clerkId: text('clerk_id').notNull().unique(), // Clerk'ten gelen 'user_2...' formatındaki ID
   email: text('email').notNull(),
   name: text('name'),
+  // Business profile — shown on PDF invoices and the public pay page
+  businessName: text('business_name'),
+  businessEmail: text('business_email'),
+  businessPhone: text('business_phone'),
+  businessAddress: text('business_address'),
+  businessTaxNumber: text('business_tax_number'),
   createdAt: timestamp('created_at').defaultNow().notNull()
 })
 
@@ -41,7 +47,12 @@ export const invoicesTable = pgTable('invoices', {
   status: invoiceStatusEnum('status').default('draft').notNull(),
   dueDate: timestamp('due_date').notNull(),
   issuedDate: timestamp('issued_date').defaultNow().notNull(),
-  notes: text('notes')
+  notes: text('notes'),
+  // Opaque token for the public payment page — unguessable, unique per invoice.
+  publicToken: text('public_token')
+    .notNull()
+    .unique()
+    .default(sql`gen_random_uuid()::text`)
 })
 
 // 4. INVOICE ITEMS Tablosu (Line Items)

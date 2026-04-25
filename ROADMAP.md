@@ -37,32 +37,52 @@
 - [x] Integrate Stripe for payment processing
 - [x] Partial Payments Support
 - [x] Calculate Overdue Invoices
+- [ ] Business profile settings page (name, email, address, tax number — used on PDF and public pay page)
+- [ ] Public client payment page (`/pay/[token]`, no auth required)
+- [ ] Replace dashboard "Pay with Stripe" with "Copy pay link" + "View as customer"
 - [x] Deliverable: Payment Integration
 
 ### 6. Week -- REVENUE DASHBOARD
 
-- [] Revenue Dashboard with Charts (Revenue, Pending, Overdue)
-- [] Last 12 Months Revenue Trends Chart
-- [] Latest Invoices Table (with status)
-- Most Valuable Clients List (by revenue)
-- [] Empty State for Dashboard (no data)
-- [] Deliverable: Revenue Dashboard
+- [ ] Revenue Dashboard with Charts (Revenue, Pending, Overdue)
+- [ ] Last 12 Months Revenue Trends Chart
+- [ ] Latest Invoices Table (with status)
+- [ ] Most Valuable Clients List (by revenue)
+- [ ] Empty State for Dashboard (no data)
+- [ ] Deliverable: Revenue Dashboard
 
 ### 7. Week -- POLISHING
 
-- [] Control All Pages Error,Loading,Empty States
-- [] Responsive Design Improvements
-- [] Accessibility Enhancements (e.g., keyboard navigation, ARIA labels)
-- [] Toast Notifications for Actions (e.g., invoice created, payment received)
-- [] Lighthouse Performance Optimization %95+
-- [] SEO Optimization (meta tags, sitemap, robots.txt) OG Images for social sharing
-- [] Deliverable: Production Quality Polish
+- [ ] Control All Pages Error, Loading, Empty States
+- [ ] Responsive Design Improvements
+- [ ] Accessibility Enhancements (e.g., keyboard navigation, ARIA labels)
+- [ ] Toast Notifications for Actions (e.g., invoice created, payment received)
+- [ ] Authorization audit (verify users can only access their own data)
+- [ ] Critical path E2E tests (invoice create → pay → mark paid)
+- [ ] Money math unit tests (`recordPaymentAndSettle`, `syncInvoiceStatus`)
+- [ ] Lighthouse Performance Optimization %95+
+- [ ] SEO Optimization (meta tags, sitemap, robots.txt) OG Images for social sharing
+- [ ] Deliverable: Production Quality Polish
 
 ### 8. Week -- DEPLOYMENT & DOCUMENTATION
 
-- [] README.md with project overview, setup instructions, and usage guide
-- [] Case Study Write-up (challenges faced, solutions implemented, future improvements)
-- [] Demo Video Creation (walkthrough of features and functionality)
-- [] Seed Data Script for easy testing
-- [] Add Portfolio Website and Share
-- [] Deliverable: Share Project with Documentation and Demo in Portfolio
+- [ ] README.md with project overview, setup instructions, and usage guide
+- [ ] "Future Improvements" section in README (intentional scope cuts + next steps)
+- [ ] Case Study Write-up (challenges faced, solutions implemented, future improvements)
+- [ ] Demo Video Creation (walkthrough of features and functionality)
+- [ ] Seed Data Script for easy testing
+- [ ] Add Portfolio Website and Share
+- [ ] Deliverable: Share Project with Documentation and Demo in Portfolio
+
+---
+
+### Future Improvements (out of 8-week scope)
+
+Items intentionally cut from scope to keep the project shippable. Document these in the case study to demonstrate scope discipline.
+
+- Email invoices to clients on send (Resend / Postmark integration)
+- Recurring / subscription invoices
+- Multi-currency exchange rate snapshotting at invoice creation
+- Refund handling via Stripe (`charge.refunded` webhook)
+- Audit log for invoice/payment changes
+- Team accounts (multiple users per business)

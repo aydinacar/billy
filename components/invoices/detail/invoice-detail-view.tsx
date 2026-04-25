@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -17,9 +17,8 @@ import { InvoiceItemsTable } from './invoice-items-table'
 import { InvoicePaymentsList } from './invoice-payments-list'
 import { InvoiceStatusActions } from './invoice-status-actions'
 import { InvoiceDownloadButton } from './invoice-download-button'
-import { InvoicePayButton } from './invoice-pay-button'
+import { InvoiceShareActions } from './invoice-share-actions'
 import { InvoiceAmountSummary } from './invoice-amount-summary'
-import { InvoiceCheckoutToast } from './invoice-checkout-toast'
 import { deleteInvoice } from '@/actions/invoices'
 import { getAmountDue, getAmountPaid, getEffectiveStatus } from '@/utils/invoice-status'
 import type { InvoiceDetail } from '@/types/invoice'
@@ -61,9 +60,6 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Suspense fallback={null}>
-        <InvoiceCheckoutToast />
-      </Suspense>
       <BackLink href="/invoices">Back to invoices</BackLink>
 
       <PageHeader
@@ -76,7 +72,7 @@ export function InvoiceDetailView({ invoice, clients }: Props) {
         description={invoice.client.name}
         action={
           <div className="flex flex-wrap gap-2">
-            {canPayWithStripe && <InvoicePayButton invoiceId={invoice.id} />}
+            {canPayWithStripe && <InvoiceShareActions publicToken={invoice.publicToken} />}
             <InvoiceStatusActions
               invoiceId={invoice.id}
               status={invoice.status}

@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 
-export function InvoiceCheckoutToast() {
+export function PublicCheckoutToast() {
   const router = useRouter()
   const pathname = usePathname()
   const params = useSearchParams()

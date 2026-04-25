@@ -5,20 +5,19 @@ import { CreditCard } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { createCheckoutSession } from '@/actions/payments'
+import { createPublicCheckoutSession } from '@/actions/payments'
 
 interface Props {
-  invoiceId: string
-  disabled?: boolean
+  token: string
 }
 
-export function InvoicePayButton({ invoiceId, disabled }: Props) {
+export function PublicPayButton({ token }: Props) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
     startTransition(async () => {
       try {
-        const url = await createCheckoutSession(invoiceId)
+        const url = await createPublicCheckoutSession(token)
         window.location.href = url
       } catch (error) {
         console.error('Error starting checkout:', error)
@@ -30,7 +29,8 @@ export function InvoicePayButton({ invoiceId, disabled }: Props) {
   return (
     <Button
       onClick={handleClick}
-      disabled={disabled || isPending}
+      disabled={isPending}
+      size="lg"
     >
       <CreditCard className="mr-2 h-4 w-4" />
       Pay with Stripe

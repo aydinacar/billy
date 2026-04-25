@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { LayoutDashboard, Users, FileText } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 interface NavItem {
@@ -13,7 +13,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/clients', label: 'Clients', icon: Users },
-  { to: '/invoices', label: 'Invoices', icon: FileText }
+  { to: '/invoices', label: 'Invoices', icon: FileText },
+  { to: '/settings', label: 'Settings', icon: Settings }
 ]
 
 interface Props {

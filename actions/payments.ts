@@ -11,6 +11,26 @@ import { recordPaymentAndSettle, syncInvoiceStatus } from '@/lib/payment-recorde
 import { getAmountDue } from '@/utils/invoice-status'
 import { getAppUrl, getStripe } from '@/lib/stripe'
 
+async function loadInvoiceByPublicToken(token: string) {
+  return db.query.invoicesTable.findFirst({
+    where: eq(invoicesTable.publicToken, token),
+    with: { client: true, payments: true }
+  })
+}
+
+export async function getPublicInvoice(token: string) {
+  const invoice = await db.query.invoicesTable.findFirst({
+    where: eq(invoicesTable.publicToken, token),
+    with: {
+      client: true,
+      items: true,
+      payments: true,
+      user: true
+    }
+  })
+  return invoice ?? null
+}
+
 async function requireUserId() {
   const { userId } = await auth()
   if (!userId) throw new Error('Unauthorized')
@@ -56,13 +76,13 @@ export async function deletePayment(paymentId: string) {
   revalidatePath('/invoices')
 }
 
-export async function createCheckoutSession(invoiceId: string): Promise<string> {
-  const userId = await requireUserId()
-  const invoice = await loadOwnedInvoice(invoiceId, userId)
+export async function createPublicCheckoutSession(token: string): Promise<string> {
+  const invoice = await loadInvoiceByPublicToken(token)
   if (!invoice) throw new Error('Invoice not found')
+  if (invoice.status === 'cancelled') throw new Error('This invoice has been cancelled')
 
   const due = getAmountDue(invoice, invoice.payments)
-  if (due <= 0) throw new Error('Invoice is already fully paid')
+  if (due <= 0) throw new Error('This invoice is already fully paid')
 
   const stripe = getStripe()
   const baseUrl = getAppUrl()
@@ -84,11 +104,11 @@ export async function createCheckoutSession(invoiceId: string): Promise<string> 
         quantity: 1
       }
     ],
-    success_url: `${baseUrl}/invoices/${invoice.id}?checkout=success`,
-    cancel_url: `${baseUrl}/invoices/${invoice.id}?checkout=cancelled`,
+    success_url: `${baseUrl}/pay/${token}?checkout=success`,
+    cancel_url: `${baseUrl}/pay/${token}?checkout=cancelled`,
     metadata: {
       invoiceId: invoice.id,
-      userId
+      userId: invoice.userId
     }
   })
 
