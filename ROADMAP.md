@@ -37,19 +37,19 @@
 - [x] Integrate Stripe for payment processing
 - [x] Partial Payments Support
 - [x] Calculate Overdue Invoices
-- [ ] Business profile settings page (name, email, address, tax number — used on PDF and public pay page)
-- [ ] Public client payment page (`/pay/[token]`, no auth required)
-- [ ] Replace dashboard "Pay with Stripe" with "Copy pay link" + "View as customer"
+- [x] Business profile settings page (name, email, address, tax number — used on PDF and public pay page)
+- [x] Public client payment page (`/pay/[token]`, no auth required)
+- [x] Replace dashboard "Pay with Stripe" with "Copy pay link" + "View as customer"
 - [x] Deliverable: Payment Integration
 
 ### 6. Week -- REVENUE DASHBOARD
 
-- [ ] Revenue Dashboard with Charts (Revenue, Pending, Overdue)
-- [ ] Last 12 Months Revenue Trends Chart
-- [ ] Latest Invoices Table (with status)
-- [ ] Most Valuable Clients List (by revenue)
-- [ ] Empty State for Dashboard (no data)
-- [ ] Deliverable: Revenue Dashboard
+- [x] Revenue Dashboard with Charts (Revenue, Pending, Overdue)
+- [x] Last 12 Months Revenue Trends Chart
+- [x] Latest Invoices Table (with status)
+- [x] Most Valuable Clients List (by revenue)
+- [x] Empty State for Dashboard (no data)
+- [x] Deliverable: Revenue Dashboard
 
 ### 7. Week -- POLISHING
 

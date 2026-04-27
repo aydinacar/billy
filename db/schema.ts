@@ -52,7 +52,8 @@ export const invoicesTable = pgTable('invoices', {
   publicToken: text('public_token')
     .notNull()
     .unique()
-    .default(sql`gen_random_uuid()::text`)
+    .default(sql`gen_random_uuid()::text`),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 })
 
 // 4. INVOICE ITEMS Tablosu (Line Items)
